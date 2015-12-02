@@ -50,13 +50,6 @@ func main() {
 		AccessTokenSecret: ACCESS_TOKEN_SECRET,
 	}
 
-	user, er := client.FollowUserId(1234)
-	if er != nil {
-		spew.Dump(er)
-	} else {
-		spew.Dump(user)
-	}
-
 	client.UserStream(func(event interface{}) {
 		spew.Dump(event)
 		switch event.(type) {
@@ -77,8 +70,8 @@ func main() {
 		case *userstream.Follow:
 			follow := event.(*userstream.Follow)
 			fmt.Printf("[follow] %s => %s Id:%d\n", follow.Source.ScreenName, follow.Target.ScreenName, follow.Target.Id)
-			time.Sleep(time.Millisecond * 6000)
-			user, er := client.FollowUserId(follow.Target.Id)
+			//			time.Sleep(time.Millisecond * 6000)
+			user, er := client.FollowUserId(follow.Source.Id)
 			if er != nil {
 				spew.Dump(er)
 			} else {
@@ -96,7 +89,7 @@ func main() {
 			fmt.Printf("[list_member_removed] %s (%s)\n",
 				listMemberRemoved.TargetObject.FullName, listMemberRemoved.TargetObject.Description)
 		case *userstream.Record:
-			process(event)
+			//process(event)
 		}
 	})
 }
