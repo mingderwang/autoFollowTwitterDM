@@ -50,6 +50,13 @@ func main() {
 		AccessTokenSecret: ACCESS_TOKEN_SECRET,
 	}
 
+	user, er := client.FollowUserId(1234)
+	if er != nil {
+		spew.Dump(er)
+	} else {
+		spew.Dump(user)
+	}
+
 	client.UserStream(func(event interface{}) {
 		spew.Dump(event)
 		switch event.(type) {
@@ -70,11 +77,12 @@ func main() {
 		case *userstream.Follow:
 			follow := event.(*userstream.Follow)
 			fmt.Printf("[follow] %s => %s Id:%d\n", follow.Source.ScreenName, follow.Target.ScreenName, follow.Target.Id)
-			tweets, er := client.FollowUserId(follow.Target.Id)
-			spew.Dump(tweets)
-			spew.Dump(er)
-			for _, tweet := range tweets {
-				fmt.Printf("%s: %s\n", tweet.User.ScreenName, tweet.Text)
+			time.Sleep(time.Millisecond * 6000)
+			user, er := client.FollowUserId(follow.Target.Id)
+			if er != nil {
+				spew.Dump(er)
+			} else {
+				spew.Dump(user)
 			}
 		case *userstream.Unfollow:
 			unfollow := event.(*userstream.Unfollow)
